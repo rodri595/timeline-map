@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import Map from "./Map";
 import Slider from "./Slider";
+import axios from 'axios'
+
 
 function App() {
   const [mark, setmark] = useState([]);
@@ -19,14 +21,15 @@ function App() {
   };
 
   useEffect(() => {
-    fetch("http://www.wizbucket.com/api/products/readevent.php")
-      .then((r) => r.json())
+    axios.get(`http://www.wizbucket.com/api/products/readevent.php`)
+    // .then(r=>{console.log(r)})
+      // .then((r) => r.json())
       .then(
         (data) => {
-          setalldata(Object.entries(data));
-          setmark(Object.entries(data)[0][1]);
-          setdatename(Object.entries(data)[0][0]);
-          setmaxvalue(Object.entries(data).length);
+          setalldata(Object.entries(data.data));
+          setmark(Object.entries(data.data)[0][1]);
+          setdatename(Object.entries(data.data)[0][0]);
+          setmaxvalue(Object.entries(data.data).length);
         },
         (error) => {
           console.error(error);
