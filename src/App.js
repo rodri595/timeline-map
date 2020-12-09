@@ -1,24 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+/* eslint-disable */
+import React, { useState, useEffect } from "react";
+import Map from "./Map";
+import Slider from "./Slider";
 
 function App() {
+  const [mark, setmark] = useState([]);
+  const [alldata, setalldata] = useState([]);
+  const [maxvalue, setmaxvalue] = useState(0);
+  const [datename, setdatename] = useState("");
+
+  const datahandller = (selectedItem) => {
+    alldata.map((o, i) => {
+      if (i === selectedItem) {
+        setmark(o[1]);
+        setdatename(o[0]);
+      }
+    });
+  };
+
+  useEffect(() => {
+    fetch("http://www.wizbucket.com/api/products/readevent.php")
+      .then((r) => r.json())
+      .then(
+        (data) => {
+          setalldata(Object.entries(data));
+          setmark(Object.entries(data)[0][1]);
+          setdatename(Object.entries(data)[0][0]);
+          setmaxvalue(Object.entries(data).length);
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Slider
+        maxValue={maxvalue}
+        valueslider={datahandller}
+        namedate={datename}
+      />
+      <Map dataMap={mark} />
+    </>
   );
 }
 
